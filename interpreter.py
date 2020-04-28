@@ -27,16 +27,10 @@ def get_token(token: str) -> Token:
 
 # insert haskell meuk hier
 
-def is_whitespace(token: str) -> bool:
-    if token == ' ':
-        return False
-    else:
-        return True
-
 
 def tokenize(tokens: str) -> List[Token]:
     if len(tokens) == 0:
         return []
     else:
-        head, *tail = filter(is_whitespace, tokens)
+        head, *tail = filter(str.strip, tokens)
         return [get_token(head)] + tokenize(tail)
