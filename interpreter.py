@@ -1,7 +1,9 @@
 from typing import List, TypeVar
-import re
+import AST
 
-my_tokens = []
+A = TypeVar('A')
+B = TypeVar('B')
+
 
 class Token:
     def __init__(self, ty, value):
@@ -9,9 +11,32 @@ class Token:
         self.value = value
 
     def __str__(self):
-        return f"Token(type='{self.type}',value={self.value}')"
+        return f"Token(type: '{self.type}', value: '{self.value}'"
 
-    __repr__ = __str__
+    def __repr__(self):
+        return f"Token(type: '{self.type}', value: '{self.value}'"
+
+class AritmeticToken(Token):
+    def __init__(self, ty, value, ident):
+        self.ident = ident
+        super().__init__(ty, value)
+
+class VariableToken(Token):
+    def __init__(self, ty, value, ident=None):
+        self.ident = ident
+        super().__init__(ty, value)
+
+class AssignmenToken(Token):
+    def __init__(self, ty, value, ident=None):
+        self.ident = ident
+        super().__init__(ty, value)
+
+    def __str__(self):
+        return f"Token(type: '{self.type}', operator: '{self.ident}'"
+
+    def __repr__(self):
+        return f"Token(type: '{self.type}', operator: '{self.ident}'"
+
 
 # insert haskell
 
@@ -20,9 +45,13 @@ def get_token(token: str) -> Token:
     if token.isdigit():
         return Token(ty='INTEGER', value=token)
     elif token == '+':
-        return Token(ty='ADD', value='+')
+        return AritmeticToken(ty='ADD', value=None, ident=token)
     elif token == '-':
-        return Token(ty='SUBTRACT', value='-')
+        return AritmeticToken(ty='SUBTRACT', value=None, ident=token)
+    elif token == '=':
+        return AssignmenToken(ty='ASSIGN', value=None, ident=token)
+    elif token.isalpha():
+        return VariableToken(ty='VARIABLE', value=None, ident=token)
 
 
 # insert haskell meuk hier
@@ -34,3 +63,17 @@ def tokenize(tokens: str) -> List[Token]:
     else:
         head, *tail = filter(str.strip, tokens)
         return [get_token(head)] + tokenize(tail)
+
+
+def get_type(value: A) -> B:
+    if value.isdigit():
+        return int(value)
+    if value.isalpha():
+        return str(value)
+
+
+def execute(tokens: List[Token]) -> A:
+    if filter(isinstance(tokens, AssignmenToken), tokens):
+        print("has assignmentToken")
+    else:
+        print("has assignmentToken")
