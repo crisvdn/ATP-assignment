@@ -1,4 +1,5 @@
 from typing import List, TypeVar
+from AST import AST, recurs_ast
 import AST
 
 A = TypeVar('A')
@@ -16,15 +17,18 @@ class Token:
     def __repr__(self):
         return f"Token(type: '{self.type}', value: '{self.value}'"
 
+
 class AritmeticToken(Token):
     def __init__(self, ty, value, ident):
         self.ident = ident
         super().__init__(ty, value)
 
+
 class VariableToken(Token):
     def __init__(self, ty, value, ident=None):
         self.ident = ident
         super().__init__(ty, value)
+
 
 class AssignmentToken(Token):
     def __init__(self, ty, value, ident=None):
@@ -72,8 +76,16 @@ def get_type(value: A) -> B:
         return str(value)
 
 
+def partition(alist, indices):
+    return [alist[i:j] for i, j in zip([0]+indices, indices+[None])]
+
+
 def execute(tokens: List[Token]) -> A:
+    ast = AST.AST()
     if any(map(lambda x: isinstance(x, AssignmentToken), tokens)):
-        print("hello, we have an assignment!")
+        a = partition(tokens, [1])
+        print(a[1])
+#        recurs_ast(ast, partition(tokens, 1))
+
     else:
         print("has no assignmentToken")
