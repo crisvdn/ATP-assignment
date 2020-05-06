@@ -26,16 +26,16 @@ class VariableToken(Token):
         self.ident = ident
         super().__init__(ty, value)
 
-class AssignmenToken(Token):
+class AssignmentToken(Token):
     def __init__(self, ty, value, ident=None):
         self.ident = ident
         super().__init__(ty, value)
 
     def __str__(self):
-        return f"Token(type: '{self.type}', operator: '{self.ident}'"
+        return f"AssignmentToken(type: '{self.type}', operator: '{self.ident}'"
 
     def __repr__(self):
-        return f"Token(type: '{self.type}', operator: '{self.ident}'"
+        return f"AssignmentToken(type: '{self.type}', operator: '{self.ident}'"
 
 
 # insert haskell
@@ -49,7 +49,7 @@ def get_token(token: str) -> Token:
     elif token == '-':
         return AritmeticToken(ty='SUBTRACT', value=None, ident=token)
     elif token == '=':
-        return AssignmenToken(ty='ASSIGN', value=None, ident=token)
+        return AssignmentToken(ty='ASSIGN', value=None, ident=token)
     elif token.isalpha():
         return VariableToken(ty='VARIABLE', value=None, ident=token)
 
@@ -73,7 +73,7 @@ def get_type(value: A) -> B:
 
 
 def execute(tokens: List[Token]) -> A:
-    if filter(isinstance(tokens, AssignmenToken), tokens):
-        print("has assignmentToken")
+    if any(isinstance(token, AssignmentToken) for token in tokens):
+        print("hello, we have an assignment!")
     else:
-        print("has assignmentToken")
+        print("has no assignmentToken")
