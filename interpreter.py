@@ -73,7 +73,7 @@ def get_type(value: A) -> B:
 
 
 def execute(tokens: List[Token]) -> A:
-    if any(isinstance(token, AssignmentToken) for token in tokens):
+    if any(map(lambda x: isinstance(x, AssignmentToken), tokens)):
         print("hello, we have an assignment!")
     else:
         print("has no assignmentToken")
