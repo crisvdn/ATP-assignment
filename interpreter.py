@@ -1,6 +1,5 @@
 from typing import List, TypeVar
 from AST import AST, recurs_ast
-import AST
 
 A = TypeVar('A')
 B = TypeVar('B')
@@ -80,12 +79,10 @@ def partition(alist, indices):
     return [alist[i:j] for i, j in zip([0]+indices, indices+[None])]
 
 
-def execute(tokens: List[Token]) -> A:
-    ast = AST.AST()
+def execute_tokens(tokens: List[Token]) -> A:
+    ast = AST()
     if any(map(lambda x: isinstance(x, AssignmentToken), tokens)):
-        a = partition(tokens, [1])
-        print(a[1])
-#        recurs_ast(ast, partition(tokens, 1))
-
+        partial_list = partition(tokens, [3])
+        print(partial_list[0])
     else:
         print("has no assignmentToken")
