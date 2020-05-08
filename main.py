@@ -7,6 +7,6 @@ if __name__ == '__main__':
     print("lines: ", lines)
     list_tokens = interpreter.tokenize(lines)
     print(list_tokens)
-    # interpreter.execute(lines)
+    interpreter.execute_tokens(list_tokens)
 
     f.close()
