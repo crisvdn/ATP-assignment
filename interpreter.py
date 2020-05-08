@@ -1,5 +1,5 @@
 from typing import List, TypeVar
-from AST import AST, recurs_ast
+from AST import AST, Node, insert
 
 A = TypeVar('A')
 B = TypeVar('B')
@@ -11,10 +11,10 @@ class Token:
         self.value = value
 
     def __str__(self):
-        return f"Token(type: '{self.type}', value: '{self.value}'"
+        return f"Token(type: {self.type}, value: {self.value}"
 
     def __repr__(self):
-        return f"Token(type: '{self.type}', value: '{self.value}'"
+        return f"Token(type: {self.type}, value: {self.value}"
 
 
 class AritmeticToken(Token):
@@ -23,10 +23,22 @@ class AritmeticToken(Token):
         super().__init__(ty, value)
 
 
+    def __str__(self):
+        return f"AritmeticToken(type: {self.type}, ident: {self.ident})"
+
+
 class VariableToken(Token):
     def __init__(self, ty, value, ident=None):
         self.ident = ident
         super().__init__(ty, value)
+
+
+    def __str__(self):
+        return f"VariableToken(type: {self.type}, value: {self.value}, ident: {self.ident})"
+
+
+    def __repr__(self):
+        return f"VariableToken(type: {self.type}, value: {self.value}, ident: {self.ident})"
 
 
 class AssignmentToken(Token):
@@ -82,7 +94,10 @@ def partition(alist, indices):
 def execute_tokens(tokens: List[Token]) -> A:
     ast = AST()
     if any(map(lambda x: isinstance(x, AssignmentToken), tokens)):
-        partial_list = partition(tokens, [3])
-        print(partial_list[0])
+        # partial_list = partition(tokens, [3])
+        insert(ast, ast.top, tokens)
+        print(tokens)
+        print("printing ast again: ", ast)
+#        print(partial_list[0])
     else:
         print("has no assignmentToken")
