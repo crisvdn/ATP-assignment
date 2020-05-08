@@ -1,4 +1,5 @@
 from typing import List, TypeVar
+import Tokens
 
 A = TypeVar('A')
 RESULT = TypeVar('RESULT')
@@ -19,31 +20,26 @@ class Node:
         self.lhs = None
         self.rhs = None
 
-
     def __str__(self):
         return f"Node(value: {self.value.__repr__()}, \nlhs: {self.lhs}, \nrhs: {self.rhs})"
-
 
     def __repr__(self):
         return f"Node(value: {self.value.__repr__()}, \nlhs: {self.lhs}, rhs: {self.rhs})"
 
 
 # Insert node into ast.
-def insert(ast: AST, ast_cur_node: Node, data) -> AST:
-    if len(data) == 0:
-        print("printing ast:", ast)
-        print("")
-        print("returning")
-        return ast
-    elif ast_cur_node.value is not None:
-        ast = insert(ast, ast_cur_node, data[2:])
-    else:
-        ast_cur_node.value = data[1]
-        ast_cur_node.lhs = data[0]
-        ast_cur_node.rhs = data[2]
-        ast = insert(ast, ast_cur_node, data[2:])
+def insert(ast_cur_node: Node, tokens:List[Tokens.Token]) -> AST:
+    ast_cur_node.value = tokens[1]
+    ast_cur_node.lhs = Node()
+    ast_cur_node.rhs = Node()
+    ast_cur_node.lhs.value = tokens[0]
+    ast_cur_node.rhs.value = tokens[2]
 
-
+def print_ast(root: Node):
+    if root:
+        print_ast(root.lhs)
+        print(root.value)
+        print_ast(root.rhs)
 
 # Insert node into correct position of tree.
 #def recurs_ast(ast: AST, current_node:Node, data: List[A]) -> RESULT:
