@@ -1,57 +1,9 @@
 from typing import List, TypeVar
-from AST import AST, Node, insert
+from AST import AST, Node, insert, print_ast
+from Tokens import *
 
 A = TypeVar('A')
 B = TypeVar('B')
-
-
-class Token:
-    def __init__(self, ty, value):
-        self.type = ty
-        self.value = value
-
-    def __str__(self):
-        return f"Token(type: {self.type}, value: {self.value}"
-
-    def __repr__(self):
-        return f"Token(type: {self.type}, value: {self.value}"
-
-
-class AritmeticToken(Token):
-    def __init__(self, ty, value, ident):
-        self.ident = ident
-        super().__init__(ty, value)
-
-
-    def __str__(self):
-        return f"AritmeticToken(type: {self.type}, ident: {self.ident})"
-
-
-class VariableToken(Token):
-    def __init__(self, ty, value, ident=None):
-        self.ident = ident
-        super().__init__(ty, value)
-
-
-    def __str__(self):
-        return f"VariableToken(type: {self.type}, value: {self.value}, ident: {self.ident})"
-
-
-    def __repr__(self):
-        return f"VariableToken(type: {self.type}, value: {self.value}, ident: {self.ident})"
-
-
-class AssignmentToken(Token):
-    def __init__(self, ty, value, ident=None):
-        self.ident = ident
-        super().__init__(ty, value)
-
-    def __str__(self):
-        return f"AssignmentToken(type: '{self.type}', operator: '{self.ident}'"
-
-    def __repr__(self):
-        return f"AssignmentToken(type: '{self.type}', operator: '{self.ident}'"
-
 
 # insert haskell
 
@@ -60,9 +12,9 @@ def get_token(token: str) -> Token:
     if token.isdigit():
         return Token(ty='INTEGER', value=token)
     elif token == '+':
-        return AritmeticToken(ty='ADD', value=None, ident=token)
+        return ArithmeticToken(ty='ADD', value=None, ident=token)
     elif token == '-':
-        return AritmeticToken(ty='SUBTRACT', value=None, ident=token)
+        return ArithmeticToken(ty='SUBTRACT', value=None, ident=token)
     elif token == '=':
         return AssignmentToken(ty='ASSIGN', value=None, ident=token)
     elif token.isalpha():
@@ -95,9 +47,10 @@ def execute_tokens(tokens: List[Token]) -> A:
     ast = AST()
     if any(map(lambda x: isinstance(x, AssignmentToken), tokens)):
         # partial_list = partition(tokens, [3])
-        insert(ast, ast.top, tokens)
-        print(tokens)
-        print("printing ast again: ", ast)
+        insert(ast.top, tokens)
+
+        # print(tokens)
+        print_ast(ast.top)
 #        print(partial_list[0])
     else:
         print("has no assignmentToken")
