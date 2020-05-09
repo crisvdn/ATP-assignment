@@ -36,7 +36,7 @@ def get_token(token: str) -> Token:
 
 # insert haskell meuk hier
 
-
+# tokenize :: str -> [Token]
 def tokenize(tokens: str) -> List[Token]:
     if len(tokens) == 0:
         return []
@@ -45,6 +45,7 @@ def tokenize(tokens: str) -> List[Token]:
         return [get_token(head)] + tokenize(tail)
 
 
+# get_type :: A -> B
 def get_type(value: A) -> B:
     if value.isdigit():
         return int(value)
@@ -52,24 +53,28 @@ def get_type(value: A) -> B:
         return str(value)
 
 
-def is_first_precedence(value) -> bool:
+# is_first_precedence :: Token -> Bool
+def is_first_precedence(value: Token) -> bool:
     return issubclass(type(value), FirstPrecedenceToken)
 
 
-def is_second_precedence(value) -> bool:
+# is_second_precedence :: Token -> Bool
+def is_second_precedence(value: Token) -> bool:
     return issubclass(type(value), SecondPrecedenceToken)
 
 
-def partition(alist, indices):
+# partition :: [Token] -> int -> [[Token]]
+def partition(alist: List[Token], indices: int) -> List[List[Token]]:
     return [alist[i:j] for i, j in zip([0]+indices, indices+[None])]
 
 
-def evaluate_expression(expression: List[Token], operatorIndex: int) -> int:
-    # if expression[operatorIndex]
-    return OPERATORS[expression[operatorIndex].ident](expression[operatorIndex - 1].value, expression[operatorIndex + 1].value)
+# evaluate_expression :: [Token] -> Int -> Int
+def evaluate_expression(expression: List[Token], operator_index: int) -> int:
+    return OPERATORS[expression[operator_index].ident](expression[operator_index - 1].value, expression[operator_index + 1].value)
 
 
-def execute(tokens: List[Token])-> int:
+# execute :: List[Tokens] -> int
+def execute(tokens: List[Token]) -> int:
     # first evaluate precedence operators () * /
     # second evaluate operators + -
     first_precedence = list(i for i, x in enumerate(tokens) if is_first_precedence(x))
@@ -87,6 +92,7 @@ def execute(tokens: List[Token])-> int:
         print(evaluate_expression(tokens, second_precedence[0]))
 
 
+# execute_tokens :: List[Token] -> A
 def execute_tokens(tokens: List[Token]) -> A:
     ast = AST()
     execute(tokens)
