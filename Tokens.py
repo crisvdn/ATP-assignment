@@ -10,6 +10,17 @@ class Token:
         return f"Token(type: {self.type}, value: {self.value})"
 
 
+class IntegerToken(Token):
+    def __init__(self, ty, value):
+        super().__init__(ty, value)
+
+    def __str__(self):
+        return f"IntegerToken(type: {self.type}, value: {self.value})"
+
+    def __repr__(self):
+        return f"IntegerToken(type: {self.type}, value: {self.value})"
+
+
 class OperatorToken(Token):
     pass
 
@@ -20,7 +31,6 @@ class FirstPrecedenceToken(OperatorToken):
 
 class SecondPrecedenceToken(OperatorToken):
     pass
-
 
 class MultiplyToken(FirstPrecedenceToken):
     def __init__(self, ty, value, ident):
