@@ -15,7 +15,7 @@ OPERATORS = {'+': lambda x, y: get_type(x) + get_type(y),
 
 def get_token(token: str) -> Token:
     if token.isdigit():
-        return Token(ty='INTEGER', value=token)
+        return IntegerToken(ty='INTEGER', value=token)
     elif token == '+':
         return AdditionToken(ty='ADD', value=None, ident=token)
     elif token == '-':
@@ -71,8 +71,28 @@ def evaluate_expression(expression: List[Token], operator_index: int) -> int:
     return OPERATORS[expression[operator_index].ident](expression[operator_index - 1].value, expression[operator_index + 1].value)
 
 
+# concat_int :: [Token] -> [Token]
+def concat_int(tokens: List[Token]) -> List[Token]:
+    if len(tokens) == 1:
+        return [tokens[0]]
+    else:
+        if isinstance(tokens[0], IntegerToken) and isinstance(tokens[1], IntegerToken):
+            tokens[0].value += tokens[1].value
+            tokens.pop(1)
+            return concat_int(tokens)
+        elif isinstance(tokens[0], IntegerToken) and not isinstance(tokens[1], IntegerToken):
+            return concat_int(tokens[1:]) + [IntegerToken(ty='INTEGER', value=tokens[0].value)]
+        else:
+            return concat_int(tokens[1:]) + [tokens[0]]
+
+
 # execute :: List[Tokens] -> int
 def execute(tokens: List[Token]) -> int:
+
+    concatted_list = concat_int(tokens)
+    concatted_list.reverse()
+    print("\nconcatted list")
+    print(concatted_list)
     # first evaluate precedence operators () * /
     # second evaluate operators + -
     first_precedence = list(i for i, x in enumerate(tokens) if is_first_precedence(x))
