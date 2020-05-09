@@ -14,12 +14,95 @@ class OperatorToken(Token):
     pass
 
 
+class FirstPrecedenceToken(OperatorToken):
+    pass
+
+
+class SecondPrecedenceToken(OperatorToken):
+    pass
+
+
+class MultiplyToken(FirstPrecedenceToken):
+    def __init__(self, ty, value, ident):
+        self.ident = ident
+        super().__init__(ty, value)
+
+    def __str__(self):
+        return f"MultiplyToken(type: {self.type}, id: {self.ident})"
+
+    def __repr__(self):
+        return f"MultiplyToken(type: {self.type}, id: {self.ident})"
+
+
+class DivideToken(FirstPrecedenceToken):
+    def __init__(self, ty, value, ident):
+        self.ident = ident
+        super().__init__(ty, value)
+
+    def __str__(self):
+        return f"DivideToken(type: {self.type}, id: {self.ident})"
+
+    def __repr__(self):
+        return f"DivideToken(type: {self.type}, id: {self.ident})"
+
+
+class LParenToken(FirstPrecedenceToken):
+    def __init__(self, ty, value, ident):
+        self.ident = ident
+        super().__init__(ty, value)
+
+    def __str__(self):
+        return f"LParenToken(type: {self.type}, id: {self.ident})"
+
+    def __repr__(self):
+        return f"LParenToken(type: {self.type}, id: {self.ident})"
+
+
+class RParenToken(FirstPrecedenceToken):
+    def __init__(self, ty, value, ident):
+        self.ident = ident
+        super().__init__(ty, value)
+
+    def __str__(self):
+        return f"RParenToken(type: {self.type}, id: {self.ident})"
+
+    def __repr__(self):
+        return f"RParenToken(type: {self.type}, id: {self.ident})"
+
+
+class AdditionToken(SecondPrecedenceToken):
+    def __init__(self, ty, value, ident):
+        self.ident = ident
+        super().__init__(ty, value)
+
+    def __str__(self):
+        return f"AdditionToken(type: {self.type}, id: {self.ident})"
+
+    def __repr__(self):
+        return f"AdditionToken(type: {self.type}, id: {self.ident})"
+
+
+class SubtractToken(SecondPrecedenceToken):
+    def __init__(self, ty, value, ident):
+        self.ident = ident
+        super().__init__(ty, value)
+
+    def __str__(self):
+        return f"SubtractToken(type: {self.type}, id: {self.ident})"
+
+    def __repr__(self):
+        return f"SubtractToken(type: {self.type}, id: {self.ident})"
+
+
 class ArithmeticToken(OperatorToken):
     def __init__(self, ty, value, ident):
         self.ident = ident
         super().__init__(ty, value)
 
     def __str__(self):
+        return f"ArithmeticToken(type: {self.type}, id: {self.ident})"
+
+    def __repr__(self):
         return f"ArithmeticToken(type: {self.type}, id: {self.ident})"
 
 
@@ -45,5 +128,3 @@ class AssignmentToken(OperatorToken):
 
     def __repr__(self):
         return f"AssignmentToken(type: '{self.type}', operator: {self.ident} )"
-
-
