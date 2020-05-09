@@ -34,8 +34,6 @@ def get_token(token: str) -> Token:
         return RParenToken(ty='RParenthesis', value=None, ident=token)
 
 
-# insert haskell meuk hier
-
 # tokenize :: str -> [Token]
 def tokenize(tokens: str) -> List[Token]:
     if len(tokens) == 0:
