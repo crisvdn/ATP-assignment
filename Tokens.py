@@ -25,11 +25,15 @@ class OperatorToken(Token):
     pass
 
 
-class FirstPrecedenceToken(OperatorToken):
+class PrecedenceToken(OperatorToken):
     pass
 
 
-class SecondPrecedenceToken(OperatorToken):
+class FirstPrecedenceToken(PrecedenceToken):
+    pass
+
+
+class SecondPrecedenceToken(PrecedenceToken):
     pass
 
 class MultiplyToken(FirstPrecedenceToken):
