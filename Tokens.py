@@ -36,6 +36,7 @@ class FirstPrecedenceToken(PrecedenceToken):
 class SecondPrecedenceToken(PrecedenceToken):
     pass
 
+
 class MultiplyToken(FirstPrecedenceToken):
     def __init__(self, ty, value, ident):
         self.ident = ident

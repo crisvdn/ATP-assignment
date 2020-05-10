@@ -1,30 +1,31 @@
 from typing import List, TypeVar
 from Tokens import *
+from program_state import *
 
 A = TypeVar('A')
 B = TypeVar('B')
 
 # insert haskell
-OPERATORS = {'+': lambda x, y: get_type(x) + get_type(y),
+OPERATORS = {'[': lambda x, y: get_type(x) + get_type(y),
              '-': lambda x, y: get_type(x) - get_type(y),
-             '*': lambda x, y: get_type(x) * get_type(y),
-             '/': lambda x, y: int(get_type(x) / get_type(y))}
+             '_': lambda x, y: get_type(x) * get_type(y),
+             '$': lambda x, y: int(get_type(x) / get_type(y))}
 
 
 def get_token(token: str) -> Token:
     if token.isdigit():
         return IntegerToken(ty='INTEGER', value=token)
-    elif token == '+':
+    elif token == '[':
         return AdditionToken(ty='ADD', value=None, ident=token)
     elif token == '-':
         return SubtractToken(ty='SUBTRACT', value=None, ident=token)
-    elif token == '=':
+    elif token == ':':
         return AssignmentToken(ty='ASSIGN', value=None, ident=token)
     elif token.isalpha():
         return VariableToken(ty='VARIABLE', value=None, ident=token)
-    elif token == '*':
+    elif token == '_':
         return MultiplyToken(ty='MULTIPLY', value=None, ident=token)
-    elif token == '/':
+    elif token == '$':
         return DivideToken(ty='DIVIDE', value=None, ident=token)
     elif token == '(':
         return LParenToken(ty='LParenthesis', value=None, ident=token)
@@ -58,13 +59,16 @@ def is_first_precedence(value: Token) -> bool:
 def is_second_precedence(value: Token) -> bool:
     return issubclass(type(value), SecondPrecedenceToken)
 
-# get_precedence_token :: [Token] -> [Token]
+
+# get_precedence_token :: [Token] -> A -> [Token]
 def get_type_token(tokens: List[Token], type_a: A) -> List[Token]:
     return list(filter(lambda x: isinstance(x, type_a), tokens))
 
 
+# get_prec_tokens :: [Token] -> [Token]
 def get_prec_tokens(tokens: List[Token]) -> List[Token]:
     return list(filter(lambda x: (issubclass(type(x), PrecedenceToken) or issubclass(type(x), IntegerToken)), tokens))
+
 
 # partition :: [Token] -> int -> [[Token]]
 def partition(alist: List[Token], indices: int) -> List[List[Token]]:
@@ -94,8 +98,14 @@ def evaluate_expression(expression: List[Token], operator_index: int) -> Token:
                         value=str((OPERATORS[expression[operator_index].ident](expression[operator_index - 1].value,
                                                                                expression[operator_index + 1].value))))
 
+
+# assign_value_to_variable :: [Token] -> Token
 def assign_value_to_variable(expression: List[Token]) -> Token:
-    return VariableToken(ty=expression[0].type, value=expression[2].value, ident=expression[0].ident )
+    if expression[2].value is not None:
+        return VariableToken(ty=expression[0].type, value=expression[2].value, ident=expression[0].ident)
+    else:
+        print("no value")
+
 
 # concat_int :: [Token] -> [Token]
 def concat_int(tokens: List[Token]) -> List[Token]:
@@ -112,13 +122,12 @@ def concat_int(tokens: List[Token]) -> List[Token]:
             return concat_int(tokens[1:]) + [tokens[0]]
 
 
-# execute :: List[Tokens] -> int
-def execute(tokens: List[Token]) -> int:
+# execute :: ProgramState -> List[Tokens] -> ProgramState
+def execute(program_state: ProgramState, tokens: List[Token]) -> ProgramState:
     concatted_list = concat_int(tokens)
     concatted_list.reverse()
     print("\nconcatted list")
     print(concatted_list)
-
 
     # first evaluate precedence operators () * /
     # second evaluate operators + -
@@ -132,6 +141,4 @@ def execute(tokens: List[Token]) -> int:
     second_precedence = list(i for i, x in enumerate(precedence_tokens) if is_second_precedence(x))
     if len(second_precedence) is not 0:
         precedence_tokens = evaluate_expressions(precedence_tokens, second_precedence)
-    print("parsing done...\n")
-    print(extra_list + precedence_tokens)
-    return assign_value_to_variable(extra_list + precedence_tokens)
+    return insert_variable(program_state, assign_value_to_variable(extra_list + precedence_tokens))
