@@ -104,18 +104,6 @@ class SubtractToken(SecondPrecedenceToken):
         return f"SubtractToken(type: {self.type}, id: {self.ident})"
 
 
-class ArithmeticToken(OperatorToken):
-    def __init__(self, ty, value, ident):
-        self.ident = ident
-        super().__init__(ty, value)
-
-    def __str__(self):
-        return f"ArithmeticToken(type: {self.type}, id: {self.ident})"
-
-    def __repr__(self):
-        return f"ArithmeticToken(type: {self.type}, id: {self.ident})"
-
-
 class VariableToken(Token):
     def __init__(self, ty, value, ident=None):
         self.ident = ident
