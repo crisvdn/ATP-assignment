@@ -1,5 +1,4 @@
 from typing import List, TypeVar
-from AST import AST, Node, insert, print_ast
 from Tokens import *
 
 A = TypeVar('A')
@@ -59,6 +58,13 @@ def is_first_precedence(value: Token) -> bool:
 def is_second_precedence(value: Token) -> bool:
     return issubclass(type(value), SecondPrecedenceToken)
 
+# get_precedence_token :: [Token] -> [Token]
+def get_type_token(tokens: List[Token], type_a: A) -> List[Token]:
+    return list(filter(lambda x: isinstance(x, type_a), tokens))
+
+
+def get_prec_tokens(tokens: List[Token]) -> List[Token]:
+    return list(filter(lambda x: (issubclass(type(x), PrecedenceToken) or issubclass(type(x), IntegerToken)), tokens))
 
 # partition :: [Token] -> int -> [[Token]]
 def partition(alist: List[Token], indices: int) -> List[List[Token]]:
@@ -75,7 +81,6 @@ def evaluate_expressions(expression: List[Token], precedence: List[int]) -> [Tok
         return expression[:precedence[0] - 1] + [evaluate_expression(expression, precedence[0])] +\
                expression[precedence[0] + 2:]
     elif len(precedence) > 1 and issubclass(type(expression[precedence[0]]), FirstPrecedenceToken):
-
         return evaluate_expressions((expression[:precedence[0] - 1] + [evaluate_expression(expression, precedence[0])]
                                      + expression[precedence[0] + 2:]), list(map(lambda x: x - 2, precedence[1:])))
     else:
@@ -89,6 +94,8 @@ def evaluate_expression(expression: List[Token], operator_index: int) -> Token:
                         value=str((OPERATORS[expression[operator_index].ident](expression[operator_index - 1].value,
                                                                                expression[operator_index + 1].value))))
 
+def assign_value_to_variable(expression: List[Token]) -> Token:
+    return VariableToken(ty=expression[0].type, value=expression[2].value, ident=expression[0].ident )
 
 # concat_int :: [Token] -> [Token]
 def concat_int(tokens: List[Token]) -> List[Token]:
@@ -112,12 +119,19 @@ def execute(tokens: List[Token]) -> int:
     print("\nconcatted list")
     print(concatted_list)
 
+
     # first evaluate precedence operators () * /
     # second evaluate operators + -
-    first_precedence = list(i for i, x in enumerate(concatted_list) if is_first_precedence(x))
+    extra_list = get_type_token(concatted_list, VariableToken) + get_type_token(concatted_list, AssignmentToken)
+    precedence_tokens = get_prec_tokens(concatted_list)
+
+    first_precedence = list(i for i, x in enumerate(precedence_tokens) if is_first_precedence(x))
+
     if len(first_precedence) is not 0:
-        concatted_list = evaluate_expressions(concatted_list, first_precedence)
-    second_precedence = list(i for i, x in enumerate(concatted_list) if is_second_precedence(x))
+        precedence_tokens = evaluate_expressions(precedence_tokens, first_precedence)
+    second_precedence = list(i for i, x in enumerate(precedence_tokens) if is_second_precedence(x))
     if len(second_precedence) is not 0:
-        concatted_list = evaluate_expressions(concatted_list, second_precedence)
-    return concatted_list
+        precedence_tokens = evaluate_expressions(precedence_tokens, second_precedence)
+    print("parsing done...\n")
+    print(extra_list + precedence_tokens)
+    return assign_value_to_variable(extra_list + precedence_tokens)
