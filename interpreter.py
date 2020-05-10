@@ -9,7 +9,7 @@ B = TypeVar('B')
 OPERATORS = {'+': lambda x, y: get_type(x) + get_type(y),
              '-': lambda x, y: get_type(x) - get_type(y),
              '*': lambda x, y: get_type(x) * get_type(y),
-             '/': lambda x, y: get_type(x) / get_type(y)}
+             '/': lambda x, y: int(get_type(x) / get_type(y))}
 
 
 def get_token(token: str) -> Token:
@@ -66,9 +66,17 @@ def partition(alist: List[Token], indices: int) -> List[List[Token]]:
 
 
 # evaluate_expressions :: [Token] -> [Int] -> Token
-def evaluate_expressions(expression: List[Token], precedence: List[int]) -> Token:
-    if len(precedence) == 1:
-        return evaluate_expression(expression, 1)
+def evaluate_expressions(expression: List[Token], precedence: List[int]) -> [Token]:
+    # if one operator token left, evaluate that expression.
+    if len(precedence) == 1 and len(expression) == 3:
+        return [evaluate_expression(expression, 1)]
+    # if multiply operators left, but one of that is first precedence(f.e multiply or divide).
+    elif len(precedence) == 1 and issubclass(type(expression[precedence[0]]), FirstPrecedenceToken):
+        return expression[:precedence[0] - 1] + [evaluate_expression(expression, precedence[0])] + expression[precedence[0] + 2:]
+    elif len(precedence) > 1 and issubclass(type(expression[precedence[0]]), FirstPrecedenceToken):
+
+        return evaluate_expressions((expression[:precedence[0] - 1] + [evaluate_expression(expression, precedence[0])] + expression[precedence[0] + 2:]),
+                                    list(map(lambda x: x - 2, precedence[1:])))
     else:
         return evaluate_expressions([evaluate_expression(expression, precedence[0])] + expression[3:],
                                     list(map(lambda x: x - 2, precedence[1:])))
@@ -76,7 +84,6 @@ def evaluate_expressions(expression: List[Token], precedence: List[int]) -> Toke
 
 # evaluate_expression :: [Token] -> Int -> Int
 def evaluate_expression(expression: List[Token], operator_index: int) -> Token:
-    # print(operator_index)
     return IntegerToken(ty='INTEGER',
                         value=str((OPERATORS[expression[operator_index].ident](expression[operator_index - 1].value,
                                                                                expression[operator_index + 1].value))))
@@ -107,11 +114,9 @@ def execute(tokens: List[Token]) -> int:
     # first evaluate precedence operators () * /
     # second evaluate operators + -
     first_precedence = list(i for i, x in enumerate(concatted_list) if is_first_precedence(x))
-    second_precedence = list(i for i, x in enumerate(concatted_list) if is_second_precedence(x))
     if len(first_precedence) is not 0:
-        evaluate_expressions(concatted_list, first_precedence)
-        print(evaluate_expression(concatted_list, first_precedence[0]))
+        concatted_list = evaluate_expressions(concatted_list, first_precedence)
+    second_precedence = list(i for i, x in enumerate(concatted_list) if is_second_precedence(x))
     if len(second_precedence) is not 0:
-        result = evaluate_expressions(concatted_list, second_precedence)
-#        print(evaluate_expression(concatted_list, second_precedence[0]))
-    return result
+        concatted_list = evaluate_expressions(concatted_list, second_precedence)
+    return concatted_list
