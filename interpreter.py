@@ -65,7 +65,7 @@ def partition(alist: List[Token], indices: int) -> List[List[Token]]:
     return [alist[i:j] for i, j in zip([0]+indices, indices+[None])]
 
 
-# evaluate_expressions :: [Token] -> [Int] -> Token
+# evaluate_expressions :: [Token] -> [Int] -> [Token]
 def evaluate_expressions(expression: List[Token], precedence: List[int]) -> [Token]:
     # if one operator token left, evaluate that expression.
     if len(precedence) == 1 and len(expression) == 3:
@@ -82,7 +82,7 @@ def evaluate_expressions(expression: List[Token], precedence: List[int]) -> [Tok
                                     list(map(lambda x: x - 2, precedence[1:])))
 
 
-# evaluate_expression :: [Token] -> Int -> Int
+# evaluate_expression :: [Token] -> Int -> Token
 def evaluate_expression(expression: List[Token], operator_index: int) -> Token:
     return IntegerToken(ty='INTEGER',
                         value=str((OPERATORS[expression[operator_index].ident](expression[operator_index - 1].value,
