@@ -126,8 +126,6 @@ def concat_int(tokens: List[Token]) -> List[Token]:
 def execute(program_state: ProgramState, tokens: List[Token]) -> ProgramState:
     concatted_list = concat_int(tokens)
     concatted_list.reverse()
-    print("\nconcatted list")
-    print(concatted_list)
 
     # first evaluate precedence operators () * /
     # second evaluate operators + -
