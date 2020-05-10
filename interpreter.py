@@ -72,11 +72,12 @@ def evaluate_expressions(expression: List[Token], precedence: List[int]) -> [Tok
         return [evaluate_expression(expression, 1)]
     # if multiply operators left, but one of that is first precedence(f.e multiply or divide).
     elif len(precedence) == 1 and issubclass(type(expression[precedence[0]]), FirstPrecedenceToken):
-        return expression[:precedence[0] - 1] + [evaluate_expression(expression, precedence[0])] + expression[precedence[0] + 2:]
+        return expression[:precedence[0] - 1] + [evaluate_expression(expression, precedence[0])] +\
+               expression[precedence[0] + 2:]
     elif len(precedence) > 1 and issubclass(type(expression[precedence[0]]), FirstPrecedenceToken):
 
-        return evaluate_expressions((expression[:precedence[0] - 1] + [evaluate_expression(expression, precedence[0])] + expression[precedence[0] + 2:]),
-                                    list(map(lambda x: x - 2, precedence[1:])))
+        return evaluate_expressions((expression[:precedence[0] - 1] + [evaluate_expression(expression, precedence[0])]
+                                     + expression[precedence[0] + 2:]), list(map(lambda x: x - 2, precedence[1:])))
     else:
         return evaluate_expressions([evaluate_expression(expression, precedence[0])] + expression[3:],
                                     list(map(lambda x: x - 2, precedence[1:])))
