@@ -1,4 +1,4 @@
-from typing import List, TypeVar
+from typing import List, TypeVar, Any
 from Tokens import *
 from program_state import *
 
@@ -61,8 +61,8 @@ def is_second_precedence(value: Token) -> bool:
 
 
 # get_precedence_token :: [Token] -> A -> [Token]
-def get_type_token(tokens: List[Token], type_a: A) -> List[Token]:
-    return list(filter(lambda x: isinstance(x, type_a), tokens))
+def get_type_token(tokens: List[Token], type_any: Any) -> List[Token]:
+    return list(filter(lambda x: isinstance(x, type_any), tokens))
 
 
 # get_prec_tokens :: [Token] -> [Token]
@@ -80,7 +80,7 @@ def evaluate_expressions(expression: List[Token], precedence: List[int]) -> [Tok
     # if one operator token left, evaluate that expression.
     if len(precedence) == 1 and len(expression) == 3:
         return [evaluate_expression(expression, 1)]
-    # if multiply operators left, but one of that is first precedence(f.e multiply or divide).
+    # if multiple operators remain, but one of that is first precedence(f.e multiply or divide).
     elif len(precedence) == 1 and issubclass(type(expression[precedence[0]]), FirstPrecedenceToken):
         return expression[:precedence[0] - 1] + [evaluate_expression(expression, precedence[0])] +\
                expression[precedence[0] + 2:]
