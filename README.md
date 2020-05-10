@@ -60,3 +60,12 @@ resulteert in:
 ```
 Variables: {'B': '117', 'C': '10'}
 ```
+
+
+## Must haves:
+- Alles is type-annotated volgens Sectie 4.4 van de reader.
+- Er is meerdere malen(meer dan de minimale 3 keer) gebruik gemaakt van map en filter. 
+er is gebruikt gemaakt van zip.
+
+## Should haves
+- Een eigen taal is bedacht.
