@@ -1,5 +1,4 @@
 from typing import List, TypeVar
-from functools import reduce
 from AST import AST, Node, insert, print_ast
 from Tokens import *
 
@@ -66,9 +65,21 @@ def partition(alist: List[Token], indices: int) -> List[List[Token]]:
     return [alist[i:j] for i, j in zip([0]+indices, indices+[None])]
 
 
+# evaluate_expressions :: [Token] -> [Int] -> Token
+def evaluate_expressions(expression: List[Token], precedence: List[int]) -> Token:
+    if len(precedence) == 1:
+        return evaluate_expression(expression, 1)
+    else:
+        return evaluate_expressions([evaluate_expression(expression, precedence[0])] + expression[3:],
+                                    list(map(lambda x: x - 2, precedence[1:])))
+
+
 # evaluate_expression :: [Token] -> Int -> Int
-def evaluate_expression(expression: List[Token], operator_index: int) -> int:
-    return OPERATORS[expression[operator_index].ident](expression[operator_index - 1].value, expression[operator_index + 1].value)
+def evaluate_expression(expression: List[Token], operator_index: int) -> Token:
+    # print(operator_index)
+    return IntegerToken(ty='INTEGER',
+                        value=str((OPERATORS[expression[operator_index].ident](expression[operator_index - 1].value,
+                                                                               expression[operator_index + 1].value))))
 
 
 # concat_int :: [Token] -> [Token]
@@ -88,40 +99,19 @@ def concat_int(tokens: List[Token]) -> List[Token]:
 
 # execute :: List[Tokens] -> int
 def execute(tokens: List[Token]) -> int:
-
     concatted_list = concat_int(tokens)
     concatted_list.reverse()
     print("\nconcatted list")
     print(concatted_list)
+
     # first evaluate precedence operators () * /
     # second evaluate operators + -
-    first_precedence = list(i for i, x in enumerate(tokens) if is_first_precedence(x))
-    second_precedence = list(i for i, x in enumerate(tokens) if is_second_precedence(x))
-
-    # for i, j in enumerate(tokens):
-    #     print(type(j))
-    #     if issubclass(type(j), ArithmeticToken):
-    #         print("HIT:", i, j)
-    #     else:
-    #         print(type(i))
+    first_precedence = list(i for i, x in enumerate(concatted_list) if is_first_precedence(x))
+    second_precedence = list(i for i, x in enumerate(concatted_list) if is_second_precedence(x))
     if len(first_precedence) is not 0:
-        print(evaluate_expression(tokens, first_precedence[0]))
+        evaluate_expressions(concatted_list, first_precedence)
+        print(evaluate_expression(concatted_list, first_precedence[0]))
     if len(second_precedence) is not 0:
-        print(evaluate_expression(tokens, second_precedence[0]))
-
-
-# execute_tokens :: List[Token] -> A
-def execute_tokens(tokens: List[Token]) -> A:
-    ast = AST()
-    execute(tokens)
-#
-#     if any(map(lambda x: isinstance(x, AssignmentToken), tokens)):
-#         # partial_list = partition(tokens, [3])
-#         insert(ast.top, tokens)
-#
-#         # print(tokens)
-#         print_ast(ast.top)
-# #        print(partial_list[0])
-#     else:
-#         print("has no assignmentToken")
-#
+        result = evaluate_expressions(concatted_list, second_precedence)
+#        print(evaluate_expression(concatted_list, second_precedence[0]))
+    return result
