@@ -1,6 +1,7 @@
 # ATP-assignment
 
-# Overzicht
+## Introductie Why++
+Ik heb de taal Why++ genoemd. Voornamelijk om de onlogische on onduidelijke operators en manier van programmeren.
 
 ## Stappen
 Grofweg zijn dit de stappen.
