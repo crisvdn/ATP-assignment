@@ -39,6 +39,10 @@ class SecondPrecedenceToken(PrecedenceToken):
     pass
 
 
+class ThirdPrecedenceToken(PrecedenceToken):
+    pass
+
+
 class MultiplyToken(FirstPrecedenceToken):
     def __init__(self, ty, value, ident, line, pos):
         self.ident = ident
@@ -133,3 +137,15 @@ class AssignmentToken(OperatorToken):
 
     def __repr__(self):
         return f"AssignmentToken(type: '{self.type}', operator: {self.ident}, line: {self.line}, pos: {self.pos})"
+
+
+class RelationalToken(ThirdPrecedenceToken):
+    def __init__(self, ty, value, ident, line, pos):
+        self.ident = ident
+        super().__init__(ty, value, line, pos)
+
+    def __str__(self):
+        return f"RelationalToken(type: {self.type}, id: {self.ident})"
+
+    def __repr__(self):
+        return f"RelationalToken(type: {self.type}, id: {self.ident}, line: {self.line}, pos: {self.pos})"
