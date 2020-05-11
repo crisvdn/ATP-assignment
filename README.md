@@ -41,7 +41,8 @@ Why++ | Python equivalent | type
 _   | * | Multiply
 $ | / | Division
 \: | = | Assignment
-
+{ | < | Less than
+} | \> | Greater than
 
 ## Voorbeeld:
 
