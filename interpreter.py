@@ -39,7 +39,7 @@ def tokenize(tokens: str, line: int, position: int) -> List[Token]:
         return []
     else:
         head, *tail = filter(str.strip, tokens)
-        return [get_token(head, line, position)] + tokenize(tail, line + 1, position + 1)
+        return [get_token(head, line, position)] + tokenize(tail, line, position + 1)
 
 
 # get_type :: A -> B
@@ -98,7 +98,7 @@ def evaluate_expressions(expression: List[Token], precedence: List[int]) -> [Tok
 def evaluate_expression(expression: List[Token], operator_index: int) -> Token:
     # This will return an IntegerToken from 3 tokens. F.e. (5 + 5) returns an integerToken with value 10.
     # Operator lambda function from OPERATORS will be used.
-    return IntegerToken(ty='INTEGER',
+    return IntegerToken(ty='INTEGER', line= expression[operator_index -1].line, pos= expression[operator_index -1].pos,
                         value=str((OPERATORS[expression[operator_index].ident](expression[operator_index - 1].value,
                                                                                expression[operator_index + 1].value))))
 
@@ -125,7 +125,7 @@ def concat_int(tokens: List[Token]) -> List[Token]:
             tokens.pop(1)
             return concat_int(tokens)
         elif isinstance(tokens[0], IntegerToken) and not isinstance(tokens[1], IntegerToken):
-            return concat_int(tokens[1:]) + [IntegerToken(ty='INTEGER', value=tokens[0].value)]
+            return concat_int(tokens[1:]) + [IntegerToken(ty='INTEGER', value=tokens[0].value, line=tokens[0].line, pos=tokens[0].pos)]
         else:
             return concat_int(tokens[1:]) + [tokens[0]]
 
@@ -137,7 +137,6 @@ def execute(program_state: ProgramState, tokens: List[Token]) -> ProgramState:
 
     # assignment and variables will be extracted into assign_var_tokens
     assign_var_tokens = get_type_token(concatted_list, VariableToken) + get_type_token(concatted_list, AssignmentToken)
-
     # precedence tokens(integers, operators) will be extracted into precedence_tokens
     precedence_tokens = get_prec_tokens(concatted_list)
 
