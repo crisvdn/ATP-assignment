@@ -5,12 +5,8 @@ if __name__ == '__main__':
     f = open("instructions.txt")
     ps = ProgramState()
 
-    while True:
-        lines = f.readline()
-        if not lines:
-            break
-        list_tokens = interpreter.tokenize(lines)
-        print(list_tokens)
-        print(interpreter.execute(ps, list_tokens))
-
+    for one_line in f.readlines():
+        list_tokens = interpreter.tokenize(one_line, 1, 1)
+        interpreter.execute(ps, list_tokens)
+    print(ps)
     f.close()

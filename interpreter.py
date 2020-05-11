@@ -12,34 +12,34 @@ OPERATORS = {'[': lambda x, y: get_type(x) + get_type(y),
              '$': lambda x, y: int(get_type(x) / get_type(y))}
 
 # get_token :: str -> Token
-def get_token(token: str) -> Token:
+def get_token(token: str, line: int, position: int) -> Token:
     if token.isdigit():
-        return IntegerToken(ty='INTEGER', value=token)
+        return IntegerToken(ty='INTEGER', value=token, line=line, pos=position)
     elif token == '[':
-        return AdditionToken(ty='ADD', value=None, ident=token)
+        return AdditionToken(ty='ADD', value=None, ident=token, line=line, pos=position)
     elif token == '-':
-        return SubtractToken(ty='SUBTRACT', value=None, ident=token)
+        return SubtractToken(ty='SUBTRACT', value=None, ident=token, line=line, pos=position)
     elif token == ':':
-        return AssignmentToken(ty='ASSIGN', value=None, ident=token)
+        return AssignmentToken(ty='ASSIGN', value=None, ident=token, line=line, pos=position)
     elif token.isalpha():
-        return VariableToken(ty='VARIABLE', value=None, ident=token)
+        return VariableToken(ty='VARIABLE', value=None, ident=token, line=line, pos=position)
     elif token == '_':
-        return MultiplyToken(ty='MULTIPLY', value=None, ident=token)
+        return MultiplyToken(ty='MULTIPLY', value=None, ident=token, line=line, pos=position)
     elif token == '$':
-        return DivideToken(ty='DIVIDE', value=None, ident=token)
+        return DivideToken(ty='DIVIDE', value=None, ident=token, line=line, pos=position)
     elif token == '(':
-        return LParenToken(ty='LParenthesis', value=None, ident=token)
+        return LParenToken(ty='LParenthesis', value=None, ident=token, line=line, pos=position)
     elif token == ')':
-        return RParenToken(ty='RParenthesis', value=None, ident=token)
+        return RParenToken(ty='RParenthesis', value=None, ident=token, line=line, pos=position)
 
 
-# tokenize :: str -> [Token]
-def tokenize(tokens: str) -> List[Token]:
+# tokenize :: (str -> int -> int) -> [Token]
+def tokenize(tokens: str, line: int, position: int) -> List[Token]:
     if len(tokens) == 0:
         return []
     else:
         head, *tail = filter(str.strip, tokens)
-        return [get_token(head)] + tokenize(tail)
+        return [get_token(head, line, position)] + tokenize(tail, line + 1, position + 1)
 
 
 # get_type :: A -> B
