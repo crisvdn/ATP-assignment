@@ -47,19 +47,24 @@ $ | / | Division
 ## Voorbeeld:
 
 ```
-B : 2 _ 53 [ 7 _ 1 [ 4 $ 2 [ 2
+b : 2 _ 53 [ 7 _ 1 [ 4 $ 2 [ 2
 C : 5 _ 2
+C : 5 _ 3
+D : 5 } 3 [ 3
 ```
 
 Python representatie:
 ```python
 B = 2 * 53 + 7 * 1 + 4 / 2 + 2
 C = 5 * 2
+C = 5 * 3
+D : 5 > 3 * 3
+
 ```
 
 resulteert in:
 ```
-Variables: {'B': '117', 'C': '10'}
+Variables: {'b': '113', 'C': '15', 'D': 'False'}
 ```
 
 

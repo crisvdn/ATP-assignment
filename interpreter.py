@@ -143,7 +143,6 @@ def execute(program_state: ProgramState, tokens: List[Token]) -> ProgramState:
     # precedence tokens(integers, operators) will be extracted into precedence_tokens
     precedence_tokens = get_prec_tokens(concatted_list)
     # Filter out loop condition
-    print(precedence_tokens)
 
     # First precedence tokens are extracted
     first_precedence = list(i for i, x in enumerate(precedence_tokens) if is_type_precedence(x, FirstPrecedenceToken))
@@ -164,7 +163,6 @@ def execute(program_state: ProgramState, tokens: List[Token]) -> ProgramState:
     if len(third_precedence) is not 0:
         precedence_tokens = evaluate_expressions(precedence_tokens, third_precedence)
     if assign_var_tokens:
-        print(assign_value_to_variable(assign_var_tokens + precedence_tokens))
         return insert_variable(program_state, assign_value_to_variable(assign_var_tokens + precedence_tokens))
     # else return evaluation
     else:
