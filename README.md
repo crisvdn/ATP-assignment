@@ -34,17 +34,21 @@ Uiteindelijk is één token het resultaat (een IntegerToken met een waarde, of e
 
 ## Operators
 
-Why++ | Python equivalent | type
---- | --- | ----
-[   |   + | Addition
-\-   | -   | Subtraction
-_   | * | Multiply
-$ | / | Division
-\: | = | Assignment
-{ | < | Less than
-} | \> | Greater than
+Why++ | Python equivalent | type | Precedence
+--- | --- | ---- | ----
+_   | * | Multiply | First
+$ | / | Division | First
+[   |   + | Addition | Second
+\-   | -   | Subtraction | Second
+\: | = | Assignment | No precedence
+{ | < | Less than | Third
+} | \> | Greater than | Third
 
 ## Voorbeeld:
+
+### orde van operaties:
+De tokens zijn opgedeeld in first, second en third precedence tokens.
+In volgorde van first, second en third worden de operaties uitgevoerd.
 
 ```
 b : 2 _ 53 [ 7 _ 1 [ 4 $ 2 [ 2
@@ -61,6 +65,8 @@ C = 5 * 3
 D : 5 > 3 * 3
 
 ```
+
+
 
 resulteert in:
 ```
