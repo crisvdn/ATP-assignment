@@ -13,7 +13,7 @@ class Token:
 
 
 class IntegerToken(Token):
-    def __init__(self, ty, value, line=0, pos=0):
+    def __init__(self, ty, value, line, pos):
         super().__init__(ty, value, line, pos)
 
     def __str__(self):
@@ -48,7 +48,7 @@ class MultiplyToken(FirstPrecedenceToken):
         return f"MultiplyToken(type: {self.type}, id: {self.ident})"
 
     def __repr__(self):
-        return f"MultiplyToken(type: {self.type}, id: {self.ident} line: {self.line}, pos: {self.pos})"
+        return f"MultiplyToken(type: {self.type}, id: {self.ident}, line: {self.line}, pos: {self.pos})"
 
 
 class DivideToken(FirstPrecedenceToken):
@@ -60,7 +60,7 @@ class DivideToken(FirstPrecedenceToken):
         return f"DivideToken(type: {self.type}, id: {self.ident})"
 
     def __repr__(self):
-        return f"DivideToken(type: {self.type}, id: {self.ident} line: {self.line}, pos: {self.pos})"
+        return f"DivideToken(type: {self.type}, id: {self.ident}, line: {self.line}, pos: {self.pos})"
 
 
 class LParenToken(FirstPrecedenceToken):
@@ -72,7 +72,7 @@ class LParenToken(FirstPrecedenceToken):
         return f"LParenToken(type: {self.type}, id: {self.ident})"
 
     def __repr__(self):
-        return f"LParenToken(type: {self.type}, id: {self.ident} line: {self.line}, pos: {self.pos})"
+        return f"LParenToken(type: {self.type}, id: {self.ident}, line: {self.line}, pos: {self.pos})"
 
 
 class RParenToken(FirstPrecedenceToken):
@@ -84,7 +84,7 @@ class RParenToken(FirstPrecedenceToken):
         return f"RParenToken(type: {self.type}, id: {self.ident})"
 
     def __repr__(self):
-        return f"RParenToken(type: {self.type}, id: {self.ident} line: {self.line}, pos: {self.pos})"
+        return f"RParenToken(type: {self.type}, id: {self.ident}, line: {self.line}, pos: {self.pos})"
 
 
 class AdditionToken(SecondPrecedenceToken):
@@ -96,7 +96,7 @@ class AdditionToken(SecondPrecedenceToken):
         return f"AdditionToken(type: {self.type}, id: {self.ident})"
 
     def __repr__(self):
-        return f"AdditionToken(type: {self.type}, id: {self.ident} line: {self.line}, pos: {self.pos})"
+        return f"AdditionToken(type: {self.type}, id: {self.ident}, line: {self.line}, pos: {self.pos})"
 
 
 class SubtractToken(SecondPrecedenceToken):
@@ -108,7 +108,7 @@ class SubtractToken(SecondPrecedenceToken):
         return f"SubtractToken(type: {self.type}, id: {self.ident})"
 
     def __repr__(self):
-        return f"SubtractToken(type: {self.type}, id: {self.ident} line: {self.line}, pos: {self.pos})"
+        return f"SubtractToken(type: {self.type}, id: {self.ident}, line: {self.line}, pos: {self.pos})"
 
 
 class VariableToken(Token):
@@ -132,4 +132,4 @@ class AssignmentToken(OperatorToken):
         return f"AssignmentToken(type: '{self.type}', operator: {self.ident} )"
 
     def __repr__(self):
-        return f"AssignmentToken(type: '{self.type}', operator: {self.ident} line: {self.line}, pos: {self.pos})"
+        return f"AssignmentToken(type: '{self.type}', operator: {self.ident}, line: {self.line}, pos: {self.pos})"
