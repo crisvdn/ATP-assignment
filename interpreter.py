@@ -17,6 +17,7 @@ OPS = {':', '-', '}', '{', '$', '_', '['}
 
 keywords = []
 
+
 # get_token :: str -> Token
 def get_token(token: str, line: int, position: int) -> Token:
     if token.isdigit():
@@ -29,7 +30,7 @@ def get_token(token: str, line: int, position: int) -> Token:
         return AssignmentToken(ty='ASSIGN', value=None, ident=token, line=line, pos=position)
     elif token in keywords:
         pass
-        # nog doen
+        # to do
     elif token == '_':
         return MultiplyToken(ty='MULTIPLY', value=None, ident=token, line=line, pos=position)
     elif token == '$':
@@ -43,10 +44,7 @@ def get_token(token: str, line: int, position: int) -> Token:
     elif token == '}':
         return RelationalToken(ty='GreaterThan', value=None, ident=token, line=line, pos=position)
     elif len(token) >= 1 and token[0].isalpha():
-        if token.isalpha():
-            return VariableToken(ty='VARIABLE', value=None, ident=token, line=line, pos=position)
-    # elif token.isalpha():
-    #     return VariableToken(ty='VARIABLE', value=None, ident=token, line=line, pos=position)
+        return VariableToken(ty='VARIABLE', value=None, ident=token, line=line, pos=position)
     else:
         print(token, "not a valid token")
 
@@ -119,7 +117,8 @@ def evaluate_expression(expression: List[Token], operator_index: int) -> Token:
 
 # assign_value_to_variable :: [Token] -> Token
 def assign_value_to_variable(expression: List[Token]) -> VariableToken:
-    # This rerturns a VariableToken and assigns the value to that variable.
+    print('expr', expression)
+    # This returns a VariableToken and assigns the value to that variable.
     if expression[2].value is not None:
         return VariableToken(ty=expression[0].type, value=expression[2].value, ident=expression[0].ident)
     else:

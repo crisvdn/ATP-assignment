@@ -4,7 +4,7 @@ from program_state import *
 
 
 def split_and_return(string):
-    return re.split('(\W)', string)
+    return re.split('([^a-zA-Z0-9])', string)
 
 
 if __name__ == '__main__':
