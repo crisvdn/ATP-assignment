@@ -12,7 +12,6 @@ if __name__ == '__main__':
     ps = ProgramState()
 
     for i, one_line in enumerate(f.readlines()):
-        print(one_line)
         splitted_line = list(filter(str.strip, split_and_return(one_line)))
         list_tokens = interpreter.tokenize(splitted_line, i+1, 1)
         interpreter.execute(ps, list_tokens)

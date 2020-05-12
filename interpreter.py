@@ -117,7 +117,6 @@ def evaluate_expression(expression: List[Token], operator_index: int) -> Token:
 
 # assign_value_to_variable :: [Token] -> Token
 def assign_value_to_variable(expression: List[Token]) -> VariableToken:
-    print('expr', expression)
     # This returns a VariableToken and assigns the value to that variable.
     if expression[2].value is not None:
         return VariableToken(ty=expression[0].type, value=expression[2].value, ident=expression[0].ident)
@@ -155,7 +154,7 @@ def execute(program_state: ProgramState, tokens: List[Token]) -> ProgramState:
 
     if len(third_precedence) is not 0:
         precedence_tokens = evaluate_expressions(precedence_tokens, third_precedence)
-    print(assign_var_tokens + precedence_tokens)
+    # print(assign_var_tokens + precedence_tokens)
     if assign_var_tokens:
         return insert_variable(program_state, assign_value_to_variable(assign_var_tokens + precedence_tokens))
     # else return evaluation
