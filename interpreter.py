@@ -13,6 +13,10 @@ OPERATORS = {'[': lambda x, y: get_type(x) + get_type(y),
              '{': lambda x, y: bool(get_type(x) < get_type(y)),
              '}': lambda x, y: bool(get_type(x) > get_type(y)),}
 
+OPS = {':', '-', '}', '{', '$', '_', '['}
+
+keywords = []
+
 # get_token :: str -> Token
 def get_token(token: str, line: int, position: int) -> Token:
     if token.isdigit():
@@ -23,8 +27,9 @@ def get_token(token: str, line: int, position: int) -> Token:
         return SubtractToken(ty='SUBTRACT', value=None, ident=token, line=line, pos=position)
     elif token == ':':
         return AssignmentToken(ty='ASSIGN', value=None, ident=token, line=line, pos=position)
-    elif token.isalpha():
-        return VariableToken(ty='VARIABLE', value=None, ident=token, line=line, pos=position)
+    elif token in keywords:
+        pass
+        # nog doen
     elif token == '_':
         return MultiplyToken(ty='MULTIPLY', value=None, ident=token, line=line, pos=position)
     elif token == '$':
@@ -37,16 +42,23 @@ def get_token(token: str, line: int, position: int) -> Token:
         return RelationalToken(ty='LessThan', value=None, ident=token, line=line, pos=position)
     elif token == '}':
         return RelationalToken(ty='GreaterThan', value=None, ident=token, line=line, pos=position)
-
+    elif len(token) >= 1 and token[0].isalpha():
+        if token.isalpha():
+            return VariableToken(ty='VARIABLE', value=None, ident=token, line=line, pos=position)
+    # elif token.isalpha():
+    #     return VariableToken(ty='VARIABLE', value=None, ident=token, line=line, pos=position)
+    else:
+        print(token, "not a valid token")
 
 
 # tokenize :: (str -> int -> int) -> [Token]
-def tokenize(tokens: str, line: int, position: int) -> List[Token]:
+def tokenize(tokens: List[str], line: int, position: int) -> List[Token]:
     if len(tokens) == 0:
         return []
     else:
-        head, *tail = filter(str.strip, tokens)
+        head, *tail = tokens
         return [get_token(head, line, position)] + tokenize(tail, line, position + 1)
+
 
 # get_type :: A -> B
 def get_type(value: A) -> B:
@@ -106,7 +118,7 @@ def evaluate_expression(expression: List[Token], operator_index: int) -> Token:
 
 
 # assign_value_to_variable :: [Token] -> Token
-def assign_value_to_variable(expression: List[Token]) -> Token:
+def assign_value_to_variable(expression: List[Token]) -> VariableToken:
     # This rerturns a VariableToken and assigns the value to that variable.
     if expression[2].value is not None:
         return VariableToken(ty=expression[0].type, value=expression[2].value, ident=expression[0].ident)
@@ -114,29 +126,11 @@ def assign_value_to_variable(expression: List[Token]) -> Token:
         print("no value")
 
 
-# concat_int :: [Token] -> [Token]
-def concat_int(tokens: List[Token]) -> List[Token]:
-    # This concatanates multiple IntegerTokens after each other.
-    # F.e. 55 + 5 will be initially build as [IntegerToken(5), IntegerToken(5), AdditionToken(+), IntegerToken(5)
-    # This function returns (IntegerToken(55), AdditionToken(+), IntegerToken(5)
-    if len(tokens) == 1:
-        return [tokens[0]]
-    else:
-        if isinstance(tokens[0], IntegerToken) and isinstance(tokens[1], IntegerToken):
-            tokens[0].value += tokens[1].value
-            tokens.pop(1)
-            return concat_int(tokens)
-        elif isinstance(tokens[0], IntegerToken) and not isinstance(tokens[1], IntegerToken):
-            return concat_int(tokens[1:]) + [IntegerToken(ty='INTEGER', value=tokens[0].value,
-                                                          line=tokens[0].line, pos=tokens[0].pos)]
-        else:
-            return concat_int(tokens[1:]) + [tokens[0]]
-
-
 # execute :: ProgramState -> List[Tokens] -> ProgramState
 def execute(program_state: ProgramState, tokens: List[Token]) -> ProgramState:
-    concatted_list = concat_int(tokens)
-    concatted_list.reverse()
+    concatted_list = tokens
+    # concatted_list = concat_int(tokens)
+    # concatted_list.reverse()
 
     # assignment and variables will be extracted into assign_var_tokens
     assign_var_tokens = get_type_token(concatted_list, VariableToken) + get_type_token(concatted_list, AssignmentToken)
@@ -162,6 +156,7 @@ def execute(program_state: ProgramState, tokens: List[Token]) -> ProgramState:
 
     if len(third_precedence) is not 0:
         precedence_tokens = evaluate_expressions(precedence_tokens, third_precedence)
+    print(assign_var_tokens + precedence_tokens)
     if assign_var_tokens:
         return insert_variable(program_state, assign_value_to_variable(assign_var_tokens + precedence_tokens))
     # else return evaluation
