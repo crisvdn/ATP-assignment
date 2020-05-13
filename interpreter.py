@@ -60,10 +60,13 @@ def tokenize(tokens: List[str], line: int, position: int) -> List[Token]:
 
 # get_type :: A -> B
 def get_type(value: A) -> B:
-    if value.isdigit():
-        return int(value)
-    if value.isalpha():
-        return str(value)
+    if value is not None:
+        if value.isdigit():
+            return int(value)
+        if value.isalpha():
+            return str(value)
+    else:
+        return 0
 
 
 # is_first_precedence :: (Token -> Any) -> Bool
@@ -73,12 +76,18 @@ def is_type_precedence(value: Token, type_any: Any) -> bool:
 
 # get_precedence_token :: ([Token] -> A) -> [Token]
 def get_type_token(tokens: List[Token], type_any: Any) -> List[Token]:
-    return list(filter(lambda x: isinstance(x, type_any), tokens))
+    if type_any == VariableToken:
+        return tokens[:2]
+    else:
+        return list(filter(lambda x: isinstance(x, type_any), tokens))
 
 
 # get_prec_tokens :: [Token] -> [Token]
 def get_prec_tokens(tokens: List[Token]) -> List[Token]:
-    return list(filter(lambda x: (issubclass(type(x), PrecedenceToken) or issubclass(type(x), IntegerToken)), tokens))
+    if isinstance(tokens[0], VariableToken) and isinstance(tokens[1], AssignmentToken):
+        return tokens[2:]
+    else:
+        return list(filter(lambda x: (issubclass(type(x), PrecedenceToken) or issubclass(type(x), IntegerToken)), tokens))
 
 
 # partition :: ([Token] -> int) -> [[Token]]
@@ -86,33 +95,63 @@ def partition(alist: List[Token], indices: int) -> List[List[Token]]:
     return [alist[i:j] for i, j in zip([0]+indices, indices+[None])]
 
 
-# evaluate_expressions :: ([Token] -> [Int]) -> [Token]
-def evaluate_expressions(expression: List[Token], precedence: List[int]) -> [Token]:
+# evaluate_expressions :: (ProgramState -> [Token] -> [Int]) -> [Token]
+def evaluate_expressions(ps: ProgramState, expression: List[Token], precedence: List[int]) -> [Token]:
     # if one operator token left, evaluate that expression.
     if len(precedence) == 1 and len(expression) == 3:
-        return [evaluate_expression(expression, 1)]
+        return [evaluate_expression(ps, expression, 1)]
     # if one first_precedence operator remains and one or more of second_precedence operators(f.e addition or subtract).
     elif len(precedence) == 1 and issubclass(type(expression[precedence[0]]), FirstPrecedenceToken)\
             or issubclass(type(expression[precedence[0]]), SecondPrecedenceToken):
-        return expression[:precedence[0] - 1] + [evaluate_expression(expression, precedence[0])] +\
+        return expression[:precedence[0] - 1] + [evaluate_expression(ps, expression, precedence[0])] +\
                expression[precedence[0] + 2:]
     # if multiple precedence tokens are left of first precedence type.
     elif len(precedence) > 1 and issubclass(type(expression[precedence[0]]), FirstPrecedenceToken):
-        return evaluate_expressions((expression[:precedence[0] - 1] + [evaluate_expression(expression, precedence[0])]
+        return evaluate_expressions(ps,
+                                    (expression[:precedence[0] - 1] +
+                                     [evaluate_expression(ps, expression, precedence[0])]
                                      + expression[precedence[0] + 2:]), list(map(lambda x: x - 2, precedence[1:])))
     # if multiple second precedence tokens are left.
     else:
-        return evaluate_expressions([evaluate_expression(expression, precedence[0])] + expression[3:],
+        return evaluate_expressions(ps, [evaluate_expression(ps, expression, precedence[0])] + expression[3:],
                                     list(map(lambda x: x - 2, precedence[1:])))
 
 
-# evaluate_expression :: ([Token] -> Int) -> Token
-def evaluate_expression(expression: List[Token], operator_index: int) -> Token:
+# evaluate_expression :: (ProgramState -> [Token] -> Int) -> Token
+def evaluate_expression(ps: ProgramState, expression: List[Token], operator_index: int) -> Token:
     # This will return an IntegerToken from 3 tokens. F.e. (5 + 5) returns an integerToken with value 10.
     # Operator lambda function from OPERATORS will be used.
-    return IntegerToken(ty='INTEGER', line=expression[operator_index -1].line, pos=expression[operator_index -1].pos,
-                        value=str((OPERATORS[expression[operator_index].ident](expression[operator_index - 1].value,
-                                                                               expression[operator_index + 1].value))))
+    if isinstance(expression[0], IntegerToken):
+        return IntegerToken(ty='INTEGER', line=expression[operator_index -1].line,
+                            pos=expression[operator_index -1].pos,
+                            value=str((OPERATORS[expression[operator_index].ident]
+                                       (expression[operator_index - 1].value,
+                                        expression[operator_index + 1].value))))
+    elif isinstance(expression[0], VariableToken) and isinstance(expression[2], IntegerToken):
+        # if variable token is inside programstate variables
+        if expression[0].ident in ps.vars:
+            return VariableToken(ty='VARIABLE',
+                                 ident=expression[0].ident,
+                                 value=str(OPERATORS[expression[operator_index].ident](ps.vars[expression[0].ident],
+                                expression[operator_index +1].value)), line=expression[operator_index -1].line,
+                                 pos=expression[operator_index -1].pos)
+        else:
+            # variable doesnt exist. throw error
+            print('error, var doesnt exist')
+    elif isinstance(expression[0], VariableToken) and isinstance(expression[2], VariableToken):
+        if expression[0].ident in ps.vars and expression[2].ident in ps.vars:
+            return VariableToken(ty='VARIABLE',
+                                 ident=expression[0].ident,
+                                 value=str(OPERATORS[expression[operator_index].ident](ps.vars[expression[0].ident],
+                                            ps.vars[expression[2].ident])), line=0, pos=0)
+        else:
+            # one of the variables doesnt exist.
+            if expression[0].ident not in ps.vars:
+                print(f"error: {expression[0].ident} is not assigned.")
+            else:
+                print(f"error: {expression[2].ident} is not assigned.")
+    else:
+        print("err")
 
 
 # assign_value_to_variable :: [Token] -> Token
@@ -131,7 +170,7 @@ def execute(program_state: ProgramState, tokens: List[Token]) -> ProgramState:
     # concatted_list.reverse()
 
     # assignment and variables will be extracted into assign_var_tokens
-    assign_var_tokens = get_type_token(concatted_list, VariableToken) + get_type_token(concatted_list, AssignmentToken)
+    assign_var_tokens = get_type_token(concatted_list, VariableToken)
     # precedence tokens(integers, operators) will be extracted into precedence_tokens
     precedence_tokens = get_prec_tokens(concatted_list)
     # Filter out loop condition
@@ -141,20 +180,19 @@ def execute(program_state: ProgramState, tokens: List[Token]) -> ProgramState:
 
     # if there are first precedence tokens, evaluate that expression
     if len(first_precedence) is not 0:
-        precedence_tokens = evaluate_expressions(precedence_tokens, first_precedence)
+        precedence_tokens = evaluate_expressions(program_state, precedence_tokens, first_precedence)
     # Second precedence tokens are extracted
     second_precedence = list(i for i, x in enumerate(precedence_tokens) if is_type_precedence(x, SecondPrecedenceToken))
     # if there are second precedence tokens, evaluate that expression
     if len(second_precedence) is not 0:
-        precedence_tokens = evaluate_expressions(precedence_tokens, second_precedence)
+        precedence_tokens = evaluate_expressions(program_state, precedence_tokens, second_precedence)
     # If a variable needs to be assigned, return it into the program state.
 
     # if there are third precedence tokens, evaluate that expression
     third_precedence = list(i for i, x in enumerate(precedence_tokens) if is_type_precedence(x, ThirdPrecedenceToken))
 
     if len(third_precedence) is not 0:
-        precedence_tokens = evaluate_expressions(precedence_tokens, third_precedence)
-    # print(assign_var_tokens + precedence_tokens)
+        precedence_tokens = evaluate_expressions(program_state, precedence_tokens, third_precedence)
     if assign_var_tokens:
         return insert_variable(program_state, assign_value_to_variable(assign_var_tokens + precedence_tokens))
     # else return evaluation

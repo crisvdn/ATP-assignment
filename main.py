@@ -15,5 +15,5 @@ if __name__ == '__main__':
         splitted_line = list(filter(str.strip, split_and_return(one_line)))
         list_tokens = interpreter.tokenize(splitted_line, i+1, 1)
         interpreter.execute(ps, list_tokens)
-    print(ps)
+        print(f"ps after line {i}: {ps}")
     f.close()

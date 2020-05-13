@@ -52,18 +52,22 @@ De tokens zijn opgedeeld in first, second en third precedence tokens.
 In volgorde van first, second en third worden de operaties uitgevoerd.
 
 ```
-b : 2 _ 53 [ 7 _ 1 [ 4 $ 2 [ 2
-C : 5 _ 2
-C : 5 _ 3
+C:5 _ 2
+C :5 _ 3
 D : 5 } 3 [ 3
+number113:2 _ 53 [ 7 _ 1 [ 4 $ 2 [ 2
+F : number113 [ 7
+multiplyCwithF : C _ F
 ```
 
 Python representatie:
 ```python
-B = 2 * 53 + 7 * 1 + 4 / 2 + 2
-C = 5 * 2
-C = 5 * 3
-D : 5 > 3 * 3
+C=5 * 2
+C =5 * 3
+D = 5 > 3 + 3
+number113=2 * 53 + 7 * 1 + 4 / 2 + 2
+F = number113 + 7
+multiplyCwithF = C * F
 
 ```
 
@@ -71,7 +75,7 @@ D : 5 > 3 * 3
 
 resulteert in:
 ```
-Variables: {'b': '113', 'C': '15', 'D': 'False'}
+{'C': '15', 'D': 'False', 'number113': '113', 'F': '120', 'multiplyCwithF': '1800'}
 ```
 
 
