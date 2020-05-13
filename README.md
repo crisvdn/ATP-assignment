@@ -81,6 +81,7 @@ resulteert in:
 
 ## Must haves:
 - Alles is type-annotated volgens Sectie 4.4 van de reader.
+- Er is gebruik gemaakt van inheritance voor de tokens. Dit is te zien in het klassendiagram.
 - Er is meerdere malen(meer dan de minimale 3 keer) gebruik gemaakt van map en filter. 
 er is gebruikt gemaakt van zip.
 
