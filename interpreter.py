@@ -143,13 +143,14 @@ def evaluate_expression(ps: ProgramState, expression: List[Token], operator_inde
             return VariableToken(ty='VARIABLE',
                                  ident=expression[0].ident,
                                  value=str(OPERATORS[expression[operator_index].ident](ps.vars[expression[0].ident],
-                                            ps.vars[expression[2].ident])), line=0, pos=0)
+                                            ps.vars[expression[2].ident])), line=expression[operator_index -1].line,
+                                 pos=expression[operator_index -1].pos)
         else:
             # one of the variables doesnt exist.
             if expression[0].ident not in ps.vars:
-                print(f"error: {expression[0].ident} is not assigned.")
+                print(f"error: {expression[0]} is not assigned.")
             else:
-                print(f"error: {expression[2].ident} is not assigned.")
+                print(f"error: {expression[2]} is not assigned.")
     else:
         print("err")
 
