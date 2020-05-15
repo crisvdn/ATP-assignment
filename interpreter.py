@@ -194,12 +194,14 @@ def execute_loop(ps: ProgramState, conditional_statement: List[Token], condition
         if len(third_precedence) is not 0:
             precedence_tokens = evaluate_expressions(ps, precedence_tokens, third_precedence)
         if assign_var_tokens:
-            return insert_variable(ps, assign_value_to_variable(assign_var_tokens + precedence_tokens))
+            insert_variable(ps, assign_value_to_variable(assign_var_tokens + precedence_tokens))
+            return execute_loop(ps, conditional_statement, conditional_expression)
         # else return evaluation
         else:
+            print("err executing loop")
             return precedence_tokens
     else:
-        print("err")
+        # expression false, return ps
         return ps
 
 

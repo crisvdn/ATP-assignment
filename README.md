@@ -46,9 +46,9 @@ $ | / | Division | First
 } | \> | Greater than | Third
 
 
-## If statements
+## While statements
 
-If statements zijn mogelijk in Why++. Ze moeten op dezelfde regel zijn opgeschreven.
+While statements zijn mogelijk in Why++. Ze moeten op dezelfde regel zijn opgeschreven.
 Hieronder is een voorbeeld van de syntax.
 ```
 ! A { B ? A : A [ 1
@@ -57,13 +57,13 @@ Hieronder is een voorbeeld van de syntax.
 
 Python equivelant
 ```python
-If A < B:
+while A < B:
     A = A + 1
 ```
 
 Hieronder is de instructie uitgelegd.
 
-1. Het ```'!'``` teken geeft aan dat het om een if statement gaat.
+1. Het ```'!'``` teken geeft aan dat het om een while statement gaat.
 
 2. Vervolgens wordt er gekeken naar de ```'?'``` token. 
 
@@ -101,7 +101,7 @@ D = 5 > 3 + 3
 number113=2 * 53 + 7 * 1 + 4 / 2 + 2
 F = number113 + 7
 multiplyCwithF = C * F
-if A < B:
+while A < B:
     A = A + 1
 
 ```
