@@ -33,7 +33,7 @@ Uiteindelijk is één token het resultaat (een IntegerToken met een waarde, of e
 
 
 
-## Operators
+## Operators and Keywords
 
 Why++ | Python equivalent | type | Precedence
 --- | --- | ---- | ----
@@ -44,6 +44,8 @@ $ | / | Division | First
 \: | = | Assignment | No precedence
 { | < | Less than | Third
 } | \> | Greater than | Third
+! | While| Keyword | no
+? | executor | keyword| no
 
 
 ## While statements
