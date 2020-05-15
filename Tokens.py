@@ -149,3 +149,31 @@ class RelationalToken(ThirdPrecedenceToken):
 
     def __repr__(self):
         return f"RelationalToken(type: {self.type}, id: {self.ident}, line: {self.line}, pos: {self.pos})"
+
+
+class ConditionalToken(ThirdPrecedenceToken):
+    pass
+
+
+class ConditionStatementToken(ConditionalToken):
+    def __init__(self, ty, value, ident, line, pos):
+        self.ident = ident
+        super().__init__(ty, value, line, pos)
+
+    def __str__(self):
+        return f"ConditionStatementToken(type: {self.type}, id: {self.ident})"
+
+    def __repr__(self):
+        return f"ConditionStatementToken(type: {self.type}, id: {self.ident}, line: {self.line}, pos: {self.pos})"
+
+
+class ConditionalExpressionToken(ConditionalToken):
+    def __init__(self, ty, value, ident, line, pos):
+        self.ident = ident
+        super().__init__(ty, value, line, pos)
+
+    def __str__(self):
+        return f"ConditionalExpressionToken(type: {self.type}, id: {self.ident})"
+
+    def __repr__(self):
+        return f"ConditionalExpressionToken(type: {self.type}, id: {self.ident}, line: {self.line}, pos: {self.pos})"
