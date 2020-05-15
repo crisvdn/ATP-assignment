@@ -83,7 +83,7 @@ In volgorde van first, second en third worden de operaties uitgevoerd.
 
 ```
 A : 1
-B : 3
+B : 5
 C:5 _ 2
 C :5 _ 3
 D : 5 } 3 [ 3
@@ -96,7 +96,7 @@ multiplyCwithF : C _ F
 Python representatie:
 ```python
 A = 1
-B = 3
+B = 5
 C=5 * 2
 C =5 * 3
 D = 5 > 3 + 3
@@ -112,7 +112,7 @@ while A < B:
 
 resulteert in:
 ```
-Variables: {'A': '2', 'B': '3', 'C': 15, 'D': False, 'number113': 113, 'F': '120', 'multiplyCwithF': 1800}
+Variables: {'A': '5', 'B': '5', 'C': 15, 'D': False, 'number113': 113, 'F': '120', 'multiplyCwithF': 1800}
 ```
 
 
