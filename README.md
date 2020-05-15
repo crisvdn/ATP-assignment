@@ -45,6 +45,34 @@ $ | / | Division | First
 { | < | Less than | Third
 } | \> | Greater than | Third
 
+
+## If statements
+
+If statements zijn mogelijk in Why++. Ze moeten op dezelfde regel zijn opgeschreven.
+Hieronder is een voorbeeld van de syntax.
+```
+! A { B ? A : A [ 1
+```
+
+
+Python equivelant
+```python
+If A < B:
+    A = A + 1
+```
+
+Hieronder is de instructie uitgelegd.
+
+1. Het ```'!'``` teken geeft aan dat het om een if statement gaat.
+
+2. Vervolgens wordt er gekeken naar de ```'?'``` token. 
+
+3. Tussen de ```'!'``` en de ```'?'``` (Dus ```A { B``` ) 
+wordt gezien als die conditie waaraan voldaan moet worden.
+
+4. Alles achter de ```'?'``` wordt gezien als uit te voeren expressie als de conditie waar is.
+ 
+
 ## Voorbeeld:
 
 ### orde van operaties:
@@ -52,22 +80,29 @@ De tokens zijn opgedeeld in first, second en third precedence tokens.
 In volgorde van first, second en third worden de operaties uitgevoerd.
 
 ```
+A : 1
+B : 3
 C:5 _ 2
 C :5 _ 3
 D : 5 } 3 [ 3
 number113:2 _ 53 [ 7 _ 1 [ 4 $ 2 [ 2
 F : number113 [ 7
 multiplyCwithF : C _ F
+! A { B ? A : A [ 1
 ```
 
 Python representatie:
 ```python
+A = 1
+B = 3
 C=5 * 2
 C =5 * 3
 D = 5 > 3 + 3
 number113=2 * 53 + 7 * 1 + 4 / 2 + 2
 F = number113 + 7
 multiplyCwithF = C * F
+if A < B:
+    A = A + 1
 
 ```
 
@@ -75,7 +110,7 @@ multiplyCwithF = C * F
 
 resulteert in:
 ```
-{'C': '15', 'D': 'False', 'number113': '113', 'F': '120', 'multiplyCwithF': '1800'}
+Variables: {'A': '2', 'B': '3', 'C': 15, 'D': False, 'number113': 113, 'F': '120', 'multiplyCwithF': 1800}
 ```
 
 
