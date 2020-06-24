@@ -122,6 +122,7 @@ Variables: {'A': '5', 'B': '5', 'C': 15, 'D': False, 'number113': 113, 'F': '120
 - Er is gebruik gemaakt van inheritance voor de tokens. Dit is te zien in het klassendiagram.
 - Er is meerdere malen(meer dan de minimale 3 keer) gebruik gemaakt van map en filter. 
 er is gebruikt gemaakt van zip.
+- Decorator functie is toegevoegd die de tijd meet in een bepaalde functie.
 
 ## Should haves
 - Een eigen taal is bedacht.
