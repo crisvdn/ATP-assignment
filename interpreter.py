@@ -21,6 +21,13 @@ keywords = []
 
 # get_token :: str -> Token
 def get_token(token: str, line: int, position: int) -> Token:
+    """
+    returns a token
+    :param token: token string in plain "text"
+    :param line: line number
+    :param position: position number
+    :return: token object
+    """
     if token.isdigit():
         return IntegerToken(ty='INTEGER', value=token, line=line, pos=position)
     elif token == '[':
@@ -56,6 +63,13 @@ def get_token(token: str, line: int, position: int) -> Token:
 
 # tokenize :: (str -> int -> int) -> [Token]
 def tokenize(tokens: List[str], line: int, position: int) -> List[Token]:
+    """
+    tokenizes a list of strings. Returns a list of tokens.
+    :param tokens:
+    :param line: line number
+    :param position: position number
+    :return: list of tokens
+    """
     if len(tokens) == 0:
         return []
     else:
@@ -65,6 +79,11 @@ def tokenize(tokens: List[str], line: int, position: int) -> List[Token]:
 
 # get_type :: A -> B
 def get_type(value: A) -> B:
+    """
+    gets the underlying type from a string / character. returns an int or str value.
+    :param value: Any type
+    :return: value typecasted to underlying type.
+    """
     if value is not None and isinstance(value, str):
         if value.isdigit():
             return int(value)
@@ -78,11 +97,23 @@ def get_type(value: A) -> B:
 
 # is_first_precedence :: (Token -> Any) -> Bool
 def is_type_precedence(value: Token, type_any: Any) -> bool:
+    """
+    returns true if it is a (sub) class of a specific type.
+    :param value: Token
+    :param type_any: specific type
+    :return: true if is of type_precedence
+    """
     return issubclass(type(value), type_any)
 
 
 # get_precedence_token :: ([Token] -> A) -> [Token]
 def get_type_token(tokens: List[Token], type_any: Any) -> List[Token]:
+    """
+    returns type token
+    :param tokens: list of tokens
+    :param type_any: specific type
+    :return: list of tokens
+    """
     if type_any == ConditionalToken:
         return tokens[1:]
     if type_any == VariableToken:
@@ -93,6 +124,11 @@ def get_type_token(tokens: List[Token], type_any: Any) -> List[Token]:
 
 # get_prec_tokens :: [Token] -> [Token]
 def get_prec_tokens(tokens: List[Token]) -> List[Token]:
+    """
+    extracts precedence tokens
+    :param tokens: list of tokens
+    :return: list of tokens from that precedence
+    """
     if isinstance(tokens[0], VariableToken) and isinstance(tokens[1], AssignmentToken):
         return tokens[2:]
     else:
@@ -101,11 +137,24 @@ def get_prec_tokens(tokens: List[Token]) -> List[Token]:
 
 # partition :: ([Token] -> int) -> [[Token]]
 def partition(alist: List[Token], indices: int) -> List[List[Token]]:
+    """
+    splits a list into multiple lists at the specific indice.
+    :param alist: list of tokens
+    :param indices: indice where to split list
+    :return: multiple list of tokens
+    """
     return [alist[i:j] for i, j in zip([0]+indices, indices+[None])]
 
 
 # evaluate_expressions :: (ProgramState -> [Token] -> [Int]) -> [Token]
 def evaluate_expressions(ps: ProgramState, expression: List[Token], precedence: List[int]) -> [Token]:
+    """
+    Evaluates multiple expressions.
+    :param ps: current programstate
+    :param expression: List of tokens forming an expression
+    :param precedence: List of integers where the precedence tokens are.
+    :return: Entire expression is evaluated into a list of tokens.
+    """
     # if one operator token left, evaluate that expression.
     if len(precedence) == 1 and len(expression) == 3:
         return [evaluate_expression(ps, expression, 1)]
@@ -128,6 +177,13 @@ def evaluate_expressions(ps: ProgramState, expression: List[Token], precedence: 
 
 # evaluate_expression :: (ProgramState -> [Token] -> Int) -> Token
 def evaluate_expression(ps: ProgramState, expression: List[Token], operator_index: int) -> Token:
+    """
+    Evaluates the entire expression, returning a single token.
+    :param ps: current programstate
+    :param expression: Single expression to evaluate
+    :param operator_index: index of operator
+    :return: returns a single token
+    """
     # This will return an IntegerToken from 3 tokens. F.e. (5 + 5) returns an integerToken with value 10.
     # Operator lambda function from OPERATORS will be used.
     if isinstance(expression[0], IntegerToken):
@@ -166,6 +222,13 @@ def evaluate_expression(ps: ProgramState, expression: List[Token], operator_inde
 
 # execute_loop :: (ProgramState -> [Token] -> [Token]) -> ProgramState:
 def execute_loop(ps: ProgramState, conditional_statement: List[Token], conditional_expression: List[Token]) -> ProgramState:
+    """
+    Keeps executing an expression if the conditional statement is true.
+    :param ps: current programstate
+    :param conditional_statement: The condition to check
+    :param conditional_expression: The expression to run if condition is true.
+    :return: program state
+    """
     # conditional statement list enters
     if evaluate_expression(ps, conditional_statement, 1).value:
         # assignment and variables will be extracted into assign_var_tokens
@@ -207,6 +270,11 @@ def execute_loop(ps: ProgramState, conditional_statement: List[Token], condition
 
 # assign_value_to_variable :: [Token] -> Token
 def assign_value_to_variable(expression: List[Token]) -> VariableToken:
+    """
+    Assigns a specific variable to a VariableToken
+    :param expression: List of tokens
+    :return: VariableToken
+    """
     # This returns a VariableToken and assigns the value to that variable.
     if expression[2].value is not None:
         return VariableToken(ty=expression[0].type, value=expression[2].value, ident=expression[0].ident)
@@ -216,6 +284,14 @@ def assign_value_to_variable(expression: List[Token]) -> VariableToken:
 
 # execute :: ProgramState -> List[Tokens] -> ProgramState
 def execute(program_state: ProgramState, tokens: List[Token]) -> ProgramState:
+    """
+    Execute the program. This is done by extracting all precedence tokens.
+    Afterwards the expressions are evaluated by precedence order (first, second and third)
+    Program state is updated with evaluations and variables.
+    :param program_state: current program state
+    :param tokens: List of tokens
+    :return: Program state
+    """
     concatted_list = tokens
 
     # assignment and variables will be extracted into assign_var_tokens
